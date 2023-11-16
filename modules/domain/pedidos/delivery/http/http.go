@@ -41,7 +41,7 @@ func New(e *echo.Echo, u pedidos.UseCase) {
 	h := &handler{useCase: u}
 	e.GET("/pedidos/:pedidoId/usuario", h.GetUsuarioByPedido)
 	e.GET("/pedidos/:pedidoId", h.GetPedido)
-	e.GET("/pedidos", h.Fetch)
+	e.GET("/pedidos", h.FetchPedidos)
 	e.POST("/pedidos", h.AddPedido)
 	e.PUT("/pedidos/:pedidoId", h.UpdatePedido)
 	e.DELETE("/pedidos/:pedidoId", h.RemovePedido)
@@ -79,13 +79,13 @@ func (h handler) GetPedido(c echo.Context) error {
 	return c.JSON(result{}.New("pedido encontrado com sucesso", pedidos, nil))
 }
 
-func (h handler) Fetch(c echo.Context) error {
-	pedidos, err := h.useCase.Fetch()
+func (h handler) FetchPedidos(c echo.Context) error {
+	pedidos, err := h.useCase.FetchPedidos()
 	if err != nil {
 		return c.JSON(result{}.New("não foi possivel recuperar os pedidos", nil, err))
 	}
 
-	return c.JSON(result{}.New("Lista de pedidos", pedidos, nil))
+	return c.JSON(result{}.New("lista de pedidos", pedidos, nil))
 }
 
 func parseId(s string, fieldName string, err_list *[]error) uint64 {
@@ -130,13 +130,11 @@ func errToString(err_list []error) string {
 }
 
 func (h handler) AddPedido(c echo.Context) error {
-	log.Print("add_pedido")
 	err_list := []error{}
 
 	name := parseStr(c.FormValue("name"), "name", &err_list)
 	quantidade := parseUint(c.FormValue("quantidade"), "quantidade", &err_list)
 	usuario_id := parseId(c.FormValue("user_id"), "user_id", &err_list)
-	log.Print("add_pedido_erro")
 
 	if len(err_list) > 0 {
 		return c.JSON(result{}.New(errToString(err_list), nil, errors.New("parametros invalidos")))
@@ -147,15 +145,11 @@ func (h handler) AddPedido(c echo.Context) error {
 		return c.JSON(result{}.New("não foi possível encontrar o usuário", nil, err))
 	}
 
-	log.Print("add_pedido_usuario")
-
 	pedido, err := h.useCase.AddPedido(name, uint(quantidade), usuario)
 
 	if err != nil {
 		return c.JSON(result{}.New("não foi possivel adicionar o pedido", nil, err))
 	}
-
-	log.Print("add_pedido_pedido")
 
 	log.Printf("Pedido adicionado, Name: %s Quantidade: %d Usuario_ID: %d", name, quantidade, usuario_id)
 

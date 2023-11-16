@@ -14,8 +14,8 @@ func New(repo usuarios.Repository) usuarios.UseCase {
 	return &usecase{repo: repo}
 }
 
-func (u usecase) Fetch() ([]models.Usuario, error) {
-	return u.repo.Fetch()
+func (u usecase) FetchUsuarios() ([]models.Usuario, error) {
+	return u.repo.FetchUsuarios()
 }
 
 func (u usecase) FetchPedidos(user_id uint64) ([]models.Pedido, error) {

@@ -34,7 +34,7 @@ func (r repository) GetUsuarioByPedido(pedidoId uint64) (usuario models.Usuario,
 
 }
 
-func (r repository) Fetch() (pedido []models.Pedido, err error) {
+func (r repository) FetchPedidos() (pedido []models.Pedido, err error) {
 	return pedido, r.conn.Find(&pedido).Error
 }
 

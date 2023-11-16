@@ -19,7 +19,7 @@ func (r repository) Get(ID uint64) (usuario models.Usuario, err error) {
 	return usuario, r.conn.First(&usuario, ID).Error
 }
 
-func (r repository) Fetch() (usuarios []models.Usuario, err error) {
+func (r repository) FetchUsuarios() (usuarios []models.Usuario, err error) {
 	return usuarios, r.conn.Find(&usuarios).Error
 }
 

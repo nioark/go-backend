@@ -3,7 +3,7 @@ package usuarios
 import "main/models"
 
 type Repository interface {
-	Fetch() ([]models.Usuario, error)
+	FetchUsuarios() ([]models.Usuario, error)
 	FetchPedidos(ID uint64) ([]models.Pedido, error)
 	Get(ID uint64) (models.Usuario, error)
 	Add(models.Usuario) (models.Usuario, error)

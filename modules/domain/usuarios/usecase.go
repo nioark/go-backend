@@ -3,7 +3,7 @@ package usuarios
 import "main/models"
 
 type UseCase interface {
-	Fetch() ([]models.Usuario, error)
+	FetchUsuarios() ([]models.Usuario, error)
 	FetchPedidos(user_id uint64) ([]models.Pedido, error)
 	GetUsuario(ID uint64) (models.Usuario, error)
 	AddUser(username, password string) (models.Usuario, error)

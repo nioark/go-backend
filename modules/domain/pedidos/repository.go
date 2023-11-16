@@ -3,7 +3,7 @@ package pedidos
 import "main/models"
 
 type Repository interface {
-	Fetch() ([]models.Pedido, error)
+	FetchPedidos() ([]models.Pedido, error)
 	GetPedido(ID uint64) (models.Pedido, error)
 	GetUsuarioByPedido(pedidoId uint64) (models.Usuario, error)
 	GetUsuario(usuarioID uint64) (models.Usuario, error)

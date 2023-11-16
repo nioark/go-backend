@@ -41,7 +41,7 @@ func New(e *echo.Echo, u usuarios.UseCase) {
 	h := &handler{useCase: u}
 	e.GET("/usuarios/:usuarioID/pedidos", h.GetUsuarioPedidos)
 	e.GET("/usuarios/:usuarioID", h.GetUsuario)
-	e.GET("/usuarios", h.Fetch)
+	e.GET("/usuarios", h.FetchUsuarios)
 	e.POST("/usuarios", h.AddUser)
 	e.PUT("/usuarios/:usuarioID", h.UpdateUser)
 	e.DELETE("/usuarios/:usuarioID", h.RemoveUser)
@@ -88,8 +88,8 @@ func (h handler) GetUsuario(c echo.Context) error {
 }
 
 // Handler
-func (h handler) Fetch(c echo.Context) error {
-	usuarios, err := h.useCase.Fetch()
+func (h handler) FetchUsuarios(c echo.Context) error {
+	usuarios, err := h.useCase.FetchUsuarios()
 	if err != nil {
 		return c.JSON(result{}.New("não foi possivel recuperar os usuarios", nil, err))
 	}
