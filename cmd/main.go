@@ -1,9 +1,13 @@
 package main
 
 import (
-	api "main/modules/domain/usuarios/delivery/http"
-	"main/modules/domain/usuarios/repository"
-	"main/modules/domain/usuarios/usecase"
+	api_usuarios "main/modules/domain/usuarios/delivery/http"
+	usuarios_repo "main/modules/domain/usuarios/repository"
+	usuarios_usecase "main/modules/domain/usuarios/usecase"
+
+	api_pedidos "main/modules/domain/pedidos/delivery/http"
+	pedidos_repo "main/modules/domain/pedidos/repository"
+	pedidos_usecase "main/modules/domain/pedidos/usecase"
 
 	"github.com/labstack/echo/v4"
 	"gorm.io/driver/postgres"
@@ -23,9 +27,13 @@ func main() {
 	e := echo.New()
 	e.Static("/", "public")
 
-	usuariosRepo := repository.New(db)
-	usuariosUsecase := usecase.New(usuariosRepo)
-	api.New(e, usuariosUsecase)
+	usuariosRepo := usuarios_repo.New(db)
+	usuariosUsecase := usuarios_usecase.New(usuariosRepo)
+	api_usuarios.New(e, usuariosUsecase)
+
+	pedidosRepo := pedidos_repo.New(db)
+	pedidosUsecase := pedidos_usecase.New(pedidosRepo)
+	api_pedidos.New(e, pedidosUsecase)
 
 	e.Logger.Fatal(e.Start(":1323"))
 

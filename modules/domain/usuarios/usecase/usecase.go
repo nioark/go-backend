@@ -18,7 +18,17 @@ func (u usecase) Fetch() ([]models.Usuario, error) {
 	return u.repo.Fetch()
 }
 
-func (u usecase) Get(ID int64) (models.Usuario, error) {
+func (u usecase) FetchPedidos(user_id uint64) ([]models.Pedido, error) {
+	_, err := u.GetUsuario(user_id)
+
+	if err != nil {
+		return []models.Pedido{}, err
+	}
+
+	return u.repo.FetchPedidos(user_id)
+}
+
+func (u usecase) GetUsuario(ID uint64) (models.Usuario, error) {
 	//todo seid for vazio ja volta erro
 
 	return u.repo.Get(ID)
@@ -37,10 +47,10 @@ func (u usecase) AddUser(username, password string) (models.Usuario, error) {
 		return models.Usuario{}, err
 	}
 
-	return u.Get(usuario.Id)
+	return u.GetUsuario(usuario.Id)
 }
 
-func (u usecase) UpdateUser(id int64, username, password string) (models.Usuario, error) {
+func (u usecase) UpdateUser(id uint64, username, password string) (models.Usuario, error) {
 	if username == "" || password == "" || id == 0 {
 		return models.Usuario{}, errors.New("usuario, senha ou id invalido")
 	}
@@ -51,10 +61,10 @@ func (u usecase) UpdateUser(id int64, username, password string) (models.Usuario
 		return models.Usuario{}, err
 	}
 
-	return u.Get(id)
+	return u.GetUsuario(id)
 }
 
-func (u usecase) RemoveUser(id int64) error {
+func (u usecase) RemoveUser(id uint64) error {
 	if id == 0 {
 		return errors.New("id invalido")
 	}

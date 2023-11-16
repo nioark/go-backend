@@ -4,8 +4,9 @@ import "main/models"
 
 type UseCase interface {
 	Fetch() ([]models.Usuario, error)
-	Get(ID int64) (models.Usuario, error)
+	FetchPedidos(user_id uint64) ([]models.Pedido, error)
+	GetUsuario(ID uint64) (models.Usuario, error)
 	AddUser(username, password string) (models.Usuario, error)
-	UpdateUser(id int64, username, password string) (models.Usuario, error)
-	RemoveUser(id int64) error
+	UpdateUser(id uint64, username, password string) (models.Usuario, error)
+	RemoveUser(id uint64) error
 }
