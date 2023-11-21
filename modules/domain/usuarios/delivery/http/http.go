@@ -197,11 +197,10 @@ func (h handler) RemoveUser(c echo.Context) error {
 	//Usuario não removido
 	if err != nil {
 		return c.JSON(result{}.New("usuario não removido", nil, err))
-
 	}
 
 	log.Printf("Usuario deletado, User ID: %s", idform)
 
-	return c.JSON(result{}.New("usuario removido com sucesso", nil, nil))
+	return c.JSON(result{}.New("usuario removido com sucesso", map[string]interface{}{"id": idint}, nil))
 
 }

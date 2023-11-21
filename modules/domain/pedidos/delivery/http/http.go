@@ -188,6 +188,6 @@ func (h handler) RemovePedido(c echo.Context) error {
 
 	log.Printf("Pedido deletado, Pedido ID: %s", idform)
 
-	return c.JSON(result{}.New("pedido removido com sucesso", nil, nil))
+	return c.JSON(result{}.New("pedido removido com sucesso", map[string]interface{}{"id": idint}, nil))
 
 }
