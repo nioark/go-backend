@@ -39,16 +39,16 @@ func (result) New(message string, data any, err error) (int, result) {
 
 func New(e *echo.Echo, u pedidos.UseCase) {
 	h := &handler{useCase: u}
-	e.GET("/pedidos/:pedidoId/usuario", h.GetUsuarioByPedido)
-	e.GET("/pedidos/:pedidoId", h.GetPedido)
+	e.GET("/pedidos/:id/usuario", h.GetUsuarioByPedido)
+	e.GET("/pedidos/:id", h.GetPedido)
 	e.GET("/pedidos", h.FetchPedidos)
 	e.POST("/pedidos", h.AddPedido)
-	e.PUT("/pedidos/:pedidoId", h.UpdatePedido)
-	e.DELETE("/pedidos/:pedidoId", h.RemovePedido)
+	e.PUT("/pedidos/:id", h.UpdatePedido)
+	e.DELETE("/pedidos/:id", h.RemovePedido)
 }
 
 func (h handler) GetUsuarioByPedido(c echo.Context) error {
-	idform := c.Param("pedidoId")
+	idform := c.Param("id")
 
 	idint, err := strconv.ParseUint(idform, 10, 64)
 
@@ -64,7 +64,7 @@ func (h handler) GetUsuarioByPedido(c echo.Context) error {
 	return c.JSON(result{}.New("usuario encontrado com sucesso", usuario, nil))
 }
 func (h handler) GetPedido(c echo.Context) error {
-	idform := c.Param("pedidoId")
+	idform := c.Param("id")
 	idint, err := strconv.ParseUint(idform, 10, 64)
 
 	if err != nil {
@@ -134,18 +134,13 @@ func (h handler) AddPedido(c echo.Context) error {
 
 	name := parseStr(c.FormValue("name"), "name", &err_list)
 	quantidade := parseUint(c.FormValue("quantidade"), "quantidade", &err_list)
-	usuario_id := parseId(c.FormValue("user_id"), "user_id", &err_list)
+	usuario_id := parseId(c.FormValue("usuarioid"), "usuarioid", &err_list)
 
 	if len(err_list) > 0 {
 		return c.JSON(result{}.New(errToString(err_list), nil, errors.New("parametros invalidos")))
 	}
 
-	usuario, err := h.useCase.GetUsuario(usuario_id)
-	if err != nil {
-		return c.JSON(result{}.New("não foi possível encontrar o usuário", nil, err))
-	}
-
-	pedido, err := h.useCase.AddPedido(name, uint(quantidade), usuario)
+	pedido, err := h.useCase.AddPedido(usuario_id, name, uint(quantidade))
 
 	if err != nil {
 		return c.JSON(result{}.New("não foi possivel adicionar o pedido", nil, err))
@@ -159,7 +154,7 @@ func (h handler) AddPedido(c echo.Context) error {
 func (h handler) UpdatePedido(c echo.Context) error {
 	err_list := []error{}
 
-	id := parseId(c.Param("pedidoId"), "id", &err_list)
+	id := parseId(c.Param("id"), "id", &err_list)
 	name := parseStr(c.FormValue("name"), "name", &err_list)
 	quantidade := parseUint(c.FormValue("quantidade"), "quantidade", &err_list)
 
@@ -178,7 +173,7 @@ func (h handler) UpdatePedido(c echo.Context) error {
 }
 
 func (h handler) RemovePedido(c echo.Context) error {
-	idform := c.Param("pedidoId")
+	idform := c.Param("id")
 	idint, err := strconv.ParseUint(idform, 10, 64)
 
 	if err != nil {

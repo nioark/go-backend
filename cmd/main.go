@@ -10,6 +10,7 @@ import (
 	pedidos_usecase "main/modules/domain/pedidos/usecase"
 
 	"github.com/labstack/echo/v4"
+	"github.com/labstack/echo/v4/middleware"
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
 )
@@ -25,6 +26,12 @@ func main() {
 
 	// Echo instance
 	e := echo.New()
+
+	e.Use(middleware.CORSWithConfig(middleware.CORSConfig{
+		AllowOrigins: []string{"*"},
+		AllowMethods: []string{echo.GET, echo.PUT, echo.POST, echo.DELETE, echo.OPTIONS},
+	}))
+
 	e.Static("/", "public")
 
 	usuariosRepo := usuarios_repo.New(db)
@@ -32,7 +39,7 @@ func main() {
 	api_usuarios.New(e, usuariosUsecase)
 
 	pedidosRepo := pedidos_repo.New(db)
-	pedidosUsecase := pedidos_usecase.New(pedidosRepo)
+	pedidosUsecase := pedidos_usecase.New(usuariosUsecase, pedidosRepo)
 	api_pedidos.New(e, pedidosUsecase)
 
 	e.Logger.Fatal(e.Start(":1323"))

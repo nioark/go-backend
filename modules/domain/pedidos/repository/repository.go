@@ -19,10 +19,6 @@ func (r repository) GetPedido(ID uint64) (pedido models.Pedido, err error) {
 	return pedido, r.conn.First(&pedido, ID).Error
 }
 
-func (r repository) GetUsuario(usuarioID uint64) (usuario models.Usuario, err error) {
-	return usuario, r.conn.First(&usuario, usuarioID).Error
-}
-
 func (r repository) GetUsuarioByPedido(pedidoId uint64) (usuario models.Usuario, err error) {
 	pedido, err_j := r.GetPedido(pedidoId)
 
@@ -38,8 +34,8 @@ func (r repository) FetchPedidos() (pedido []models.Pedido, err error) {
 	return pedido, r.conn.Find(&pedido).Error
 }
 
-func (r repository) Add(pedido models.Pedido) (models.Pedido, error) {
-	return pedido, r.conn.Create(&pedido).Error
+func (r repository) Add(pedido models.Pedido) (ID uint64, err error) {
+	return pedido.ID, r.conn.Create(&pedido).Error
 }
 
 func (r repository) Update(ID uint64, name string, quantidade uint) error {

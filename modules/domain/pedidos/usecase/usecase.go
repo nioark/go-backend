@@ -4,14 +4,16 @@ import (
 	"errors"
 	"main/models"
 	"main/modules/domain/pedidos"
+	"main/modules/domain/usuarios"
 )
 
 type usecase struct {
-	repo pedidos.Repository
+	usuarios usuarios.UseCase
+	repo     pedidos.Repository
 }
 
-func New(repo pedidos.Repository) pedidos.UseCase {
-	return &usecase{repo: repo}
+func New(usuarios usuarios.UseCase, repo pedidos.Repository) pedidos.UseCase {
+	return &usecase{usuarios: usuarios, repo: repo}
 }
 
 func (u usecase) FetchPedidos() ([]models.Pedido, error) {
@@ -22,17 +24,19 @@ func (u usecase) GetPedido(ID uint64) (models.Pedido, error) {
 	return u.repo.GetPedido(ID)
 }
 
-func (u usecase) GetUsuario(usuarioID uint64) (models.Usuario, error) {
-	return u.repo.GetUsuario(usuarioID)
-}
-
 func (u usecase) GetUsuarioByPedido(pedidoId uint64) (models.Usuario, error) {
 	return u.repo.GetUsuarioByPedido(pedidoId)
 }
 
-func (u usecase) AddPedido(name string, quantidade uint, usuario models.Usuario) (models.Pedido, error) {
-	if name == "" || quantidade == 0 || usuario.Id == 0 || usuario.Name == "" || usuario.Password == "" {
+func (u usecase) AddPedido(usuarioID uint64, name string, quantidade uint) (models.Pedido, error) {
+	if name == "" || quantidade == 0 || usuarioID == 0 {
 		return models.Pedido{}, errors.New("valores de entradas invalido")
+	}
+
+	usuario, err := u.usuarios.GetUsuario(usuarioID)
+
+	if err != nil {
+		return models.Pedido{}, err
 	}
 
 	pedido := models.Pedido{
@@ -41,13 +45,12 @@ func (u usecase) AddPedido(name string, quantidade uint, usuario models.Usuario)
 		UsuarioID:  usuario.Id,
 	}
 
-	var err error
-	pedido, err = u.repo.Add(pedido)
+	id, err := u.repo.Add(pedido)
 	if err != nil {
 		return models.Pedido{}, err
 	}
 
-	return u.GetPedido(uint64(pedido.ID))
+	return u.GetPedido(id)
 }
 func (u usecase) UpdatePedido(id uint64, name string, quantidade uint) (models.Pedido, error) {
 	if id == 0 || name == "" || quantidade == 0 {

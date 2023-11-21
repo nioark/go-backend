@@ -39,17 +39,17 @@ type handler struct {
 
 func New(e *echo.Echo, u usuarios.UseCase) {
 	h := &handler{useCase: u}
-	e.GET("/usuarios/:usuarioID/pedidos", h.GetUsuarioPedidos)
-	e.GET("/usuarios/:usuarioID", h.GetUsuario)
+	e.GET("/usuarios/:id/pedidos", h.GetUsuarioPedidos)
+	e.GET("/usuarios/:id", h.GetUsuario)
 	e.GET("/usuarios", h.FetchUsuarios)
 	e.POST("/usuarios", h.AddUser)
-	e.PUT("/usuarios/:usuarioID", h.UpdateUser)
-	e.DELETE("/usuarios/:usuarioID", h.RemoveUser)
+	e.PUT("/usuarios/:id", h.UpdateUser)
+	e.DELETE("/usuarios/:id", h.RemoveUser)
 }
 
 func (h handler) GetUsuarioPedidos(c echo.Context) error {
 
-	idform := c.Param("usuarioID")
+	idform := c.Param("id")
 
 	idint, err := strconv.ParseUint(idform, 10, 64)
 
@@ -69,7 +69,7 @@ func (h handler) GetUsuarioPedidos(c echo.Context) error {
 
 func (h handler) GetUsuario(c echo.Context) error {
 
-	idform := c.Param("usuarioID")
+	idform := c.Param("id")
 
 	idint, err := strconv.ParseUint(idform, 10, 64)
 
@@ -141,7 +141,7 @@ func errToString(err_list []error) string {
 func (h handler) AddUser(c echo.Context) error {
 	err_list := []error{}
 
-	username := parseStr(c.FormValue("username"), "username", &err_list)
+	username := parseStr(c.FormValue("name"), "name", &err_list)
 	password := parseStr(c.FormValue("password"), "password", &err_list)
 
 	if len(err_list) > 0 {
@@ -162,8 +162,8 @@ func (h handler) AddUser(c echo.Context) error {
 func (h handler) UpdateUser(c echo.Context) error {
 	err_list := []error{}
 
-	id := parseId(c.Param("usuarioID"), "id", &err_list)
-	username := parseStr(c.FormValue("username"), "username", &err_list)
+	id := parseId(c.Param("id"), "id", &err_list)
+	username := parseStr(c.FormValue("name"), "name", &err_list)
 	password := parseStr(c.FormValue("password"), "password", &err_list)
 
 	if len(err_list) > 0 {
@@ -183,7 +183,7 @@ func (h handler) UpdateUser(c echo.Context) error {
 }
 
 func (h handler) RemoveUser(c echo.Context) error {
-	idform := c.Param("usuarioID")
+	idform := c.Param("id")
 
 	idint, err := strconv.ParseUint(idform, 10, 64)
 
