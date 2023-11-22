@@ -39,6 +39,7 @@ type handler struct {
 
 func New(e *echo.Echo, u usuarios.UseCase) {
 	h := &handler{useCase: u}
+	// e.GET("/graphql/usuario/:id", h.GetUsuarioGraphql)
 	e.GET("/usuarios/:id/pedidos", h.GetUsuarioPedidos)
 	e.GET("/usuarios/:id", h.GetUsuario)
 	e.GET("/usuarios", h.FetchUsuarios)
@@ -46,6 +47,10 @@ func New(e *echo.Echo, u usuarios.UseCase) {
 	e.PUT("/usuarios/:id", h.UpdateUser)
 	e.DELETE("/usuarios/:id", h.RemoveUser)
 }
+
+// func (h handler) GetUsuarioGraphql(c echo.Context) error {
+
+// }
 
 func (h handler) GetUsuarioPedidos(c echo.Context) error {
 
