@@ -27,7 +27,6 @@ func (r repository) GetUsuarioByPedido(pedidoId uint64) (usuario models.Usuario,
 	}
 
 	return usuario, r.conn.Where("id = ?", pedido.UsuarioID).First(&usuario).Error
-
 }
 
 func (r repository) FetchPedidos() (pedido []models.Pedido, err error) {

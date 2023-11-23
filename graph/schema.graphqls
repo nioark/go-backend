@@ -1,0 +1,40 @@
+
+type Usuario {
+  id: Int
+  name: String!
+  password: String!
+}
+
+type Pedido {
+  id: Int
+  name: String!
+  quantidade: Int!
+  usuario_id: Int!
+}
+
+type Query {
+  usuario(id: Int!): Usuario!
+  usuarios: [Usuario!]!
+  pedidosFromUsuario(id: Int!): [Pedido!]!
+  pedidos: [Pedido!]!
+  pedido(id: Int!): Pedido!
+  usuarioFromPedido(id: Int!): Usuario!
+}
+
+input NewUsuario {
+  name: String!
+  password: String!
+}
+
+input NewPedido {
+  name: String!
+  quantidade: Int!
+  usuario_id: Int!
+}
+
+type Mutation {
+  addUsuario(input: NewUsuario!): Usuario!
+  addPedido(input: NewPedido!): Pedido!
+  updateUsuario(id: Int!, input: NewUsuario!): Usuario!
+  updatePedido(id: Int!, input: NewPedido!): Pedido!
+}
